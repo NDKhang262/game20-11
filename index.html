@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#142e32" />
+    <link rel="icon" href="data:," />
+    <title>RE:STUDENT — Nếu Được Học Lại</title>
+  </head>
+  <body>
+    <main>
+      <header><span class="eyebrow">20 / 11 · NẾU ĐƯỢC HỌC LẠI</span><h1>RE:STUDENT<span>Phòng ngủ · Demo</span></h1></header>
+      <div id="game" aria-label="Phòng ngủ ngày 20 tháng 11"></div>
+      <section class="panel" aria-label="Điều khiển">
+        <div><p id="message" role="status">Đang tải phòng ngủ…</p><small>Di chuyển: WASD / phím mũi tên / các nút bên dưới.</small><p id="story-status"></p></div>
+        <div class="controls">
+          <div class="dpad" aria-label="Di chuyển cảm ứng">
+            <button data-direction="up" aria-label="Đi lên">↑</button>
+            <button data-direction="left" aria-label="Đi trái">←</button>
+            <button data-direction="down" aria-label="Đi xuống">↓</button>
+            <button data-direction="right" aria-label="Đi phải">→</button>
+          </div>
+          <button id="interact">Tương tác <kbd>E</kbd></button>
+        </div>
+      </section>
+      <dialog id="dialogue" aria-labelledby="dialogue-title">
+        <h2 id="dialogue-title"></h2>
+        <p id="dialogue-text"></p>
+        <div class="dialogue-actions"><button id="dialogue-next" hidden>Tiếp tục</button><button id="dialogue-close">Đóng</button></div>
+      </dialog>
+      <footer>BẢN THỬ KỸ THUẬT · Phaser 3 + TypeScript + Vite</footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.npm-cache/
+artifacts/
+*.log
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+.npmrc.local
+
+# Local editor / operating system files
+.DS_Store
+Thumbs.db
+*.local
