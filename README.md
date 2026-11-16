@@ -2,6 +2,22 @@
 
 Bản demo phòng ngủ 20/11 cho RPG 2D / Escape Room: map Tiled 20×15 ô, mỗi ô 32 px, di chuyển, collision và tương tác. Chưa thêm kịch bản chính thức. Xem [hướng dẫn phòng ngủ](docs/BEDROOM.md).
 
+## Phối hợp Director / Developer
+
+Đọc [AGENTS.md](AGENTS.md) trước khi tiếp tục. Bộ tài liệu hiện hành:
+
+- [GAME_DESIGN](docs/GAME_DESIGN.md): phạm vi game và demo thực tế.
+- [STORY](docs/STORY.md): JSON hội thoại, effects và trạng thái chương 0.
+- [PUZZLES](docs/PUZZLES.md): mẫu bàn giao câu đố, chưa có nội dung duyệt.
+- [ASSET_GUIDE](docs/ASSET_GUIDE.md): inventory, nguồn gốc và quy tắc map.
+- [TASKS](docs/TASKS.md): việc đã làm/chưa làm và kết quả kiểm thử.
+- [DECISIONS](docs/DECISIONS.md): quyết định có nguồn, phân biệt đề xuất.
+- [REVIEW_REQUEST](docs/REVIEW_REQUEST.md): câu hỏi cần Director giải quyết.
+
+Chương 0 đã có logic chuẩn bị nhưng chưa bật: báo thức → ba ký ức → sổ → du hành →
+yêu cầu sang năm nhất. Chưa có scene năm nhất hoặc lời thoại chính thức. Dữ liệu ở
+`src/game/data/chapter0.json`, pending/disabled; test fixture không phải kịch bản.
+
 ## Chạy trên Windows PowerShell
 
 ```powershell
@@ -31,10 +47,11 @@ VS Code đã có ở `D:\Microsoft VS Code` nhưng `code` không nằm trong PAT
 
 ```powershell
 npm.cmd run typecheck
-npm.cmd run test:systems
+npm.cmd test
 npm.cmd run build
 # Giữ dev server hoạt động ở terminal khác:
 npm.cmd run test:browser
+npm.cmd run test:chapter0:browser
 ```
 
 Smoke test dùng Chrome đã cài, không tải Chromium riêng. Kiểm tra HTTP, canvas, WASD/mũi tên, collision, bảy vùng tương tác, hộp nội dung, desktop 1366×1080 và mobile giả lập 390×844 / 844×390, cảm ứng và console. Kết quả/ảnh được lưu tại `artifacts/bedroom-*`. Đây không thay thế kiểm thử điện thoại thật hoặc Safari/iOS.
@@ -46,6 +63,8 @@ Smoke test dùng Chrome đã cài, không tải Chromium riêng. Kiểm tra HTTP
 - `src/game/scenes/TestScene.ts`: giữ lại màn thử cũ.
 - `src/game/entities/Player.ts`: nhân vật placeholder và hitbox chân.
 - `src/game/systems/StoryState.ts`, `src/game/data/story.ts`: kiến trúc hội thoại/nhiệm vụ/ký ức và catalog chờ kịch bản.
+- `src/game/systems/StoryCatalog.ts`, `src/game/data/chapter0.json`: dữ liệu riêng và validation/approval guard.
+- `src/game/systems/ChapterZero.ts`: gate chương 0 và handoff sang năm nhất, chưa có scene đích.
 - `src/game/systems/Controls.ts`: điều khiển cảm ứng và vòng đời event listener.
 - `src/game/entities`, `puzzles`, `data`: chỗ mở rộng nhân vật, câu đố, dữ liệu.
 - `src/styles/main.css`: giao diện responsive.

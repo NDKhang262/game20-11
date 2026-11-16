@@ -23,7 +23,8 @@ Các asset đều tạo từ mã nguồn, không tải bộ đồ họa bên ngo
 
 ## Kịch bản chính thức
 
-`src/game/data/story.ts` là điểm nhập nội dung. Hiện ba catalog đều rỗng.
+`src/game/data/chapter0.json` là điểm nhập nội dung; `story.ts` nạp và kiểm tra dữ liệu.
+Hiện ba catalog đều rỗng, approval pending và chapter0 disabled. Xem [STORY.md](STORY.md).
 Không có lời thoại, nhiệm vụ hay ký ức tự sáng tác. Thông báo khi tương tác chỉ là
 trạng thái thiếu nội dung, không phải hội thoại của nhân vật.
 
@@ -36,18 +37,22 @@ trạng thái thiếu nội dung, không phải hội thoại của nhân vật.
 
 ID hội thoại dự kiến: `bedroom.bed`, `bedroom.desk`, `bedroom.laptop`,
 `bedroom.alarm`, `bedroom.bookshelf`, `bedroom.photo`, `bedroom.door`.
-Để gắn ký ức, thêm `memoryId` vào object trong Tiled và khai báo ID đó trong catalog.
-Tiến độ hiện chỉ nằm trong RAM, chưa lưu qua lần tải lại trang. Chưa có branching
-dialogue, điều kiện mở cửa hoặc chuyển chương; triển khai sau khi có kịch bản.
+`memoryId` trên object là cơ chế generic cũ. Ký ức chương 0 dùng action onComplete
+trong dữ liệu hội thoại sau khi duyệt nội dung/mapping, không tự thêm property vào map.
+Tiến độ hiện chỉ nằm trong RAM, chưa lưu qua lần tải lại trang. Đã có gate logic
+chương 0 và event yêu cầu chuyển chương, nhưng chưa có branching dialogue, mở cửa
+thật hoặc scene năm nhất; xem REVIEW_REQUEST để chốt thiết kế.
 
 ## Kiểm thử
 
 ```powershell
 npm.cmd run typecheck
 npm.cmd run test:systems
+npm.cmd run test:chapter0
 npm.cmd run build
 # Khi dev server đang chạy:
 npm.cmd run test:browser
+npm.cmd run test:chapter0:browser
 ```
 
 `test:systems` hiện dùng Node 24 với experimental transform-types để chạy TypeScript

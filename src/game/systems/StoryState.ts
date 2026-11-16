@@ -1,12 +1,15 @@
+import type { ChapterZeroAction } from './ChapterZero';
+
 export interface DialogueLine { speaker?: string; text: string }
-export interface DialogueDefinition { id: string; lines: readonly DialogueLine[] }
+export interface DialogueDefinition { id: string; lines: readonly DialogueLine[]; onComplete?: readonly ChapterZeroAction[] }
 export interface QuestDefinition { id: string; title: string; requiredInteractions: readonly string[]; requiredMemories?: readonly string[] }
-export interface MemoryDefinition { id: string; title: string; chapter: 1 | 2 | 3 | 4 }
+export interface MemoryDefinition { id: string; title: string; chapter: 0 | 1 | 2 | 3 | 4 }
 
 /** No story text is generated here: content is supplied through catalogs. */
 export class DialogueSystem {
   private active?: DialogueDefinition;
   private index = 0;
+  private completedActions: ChapterZeroAction[] = [];
   constructor(private readonly catalog: readonly DialogueDefinition[]) {}
   open(id: string): boolean {
     this.close();
@@ -15,10 +18,16 @@ export class DialogueSystem {
   }
   get current(): DialogueLine | undefined { return this.active?.lines[this.index]; }
   next(): DialogueLine | undefined {
-    if (this.active && ++this.index >= this.active.lines.length) this.close();
+    if (this.active && ++this.index >= this.active.lines.length) {
+      this.completedActions = [...(this.active.onComplete ?? [])];
+      this.active = undefined; this.index = 0;
+    }
     return this.current;
   }
-  close() { this.active = undefined; this.index = 0; }
+  takeCompletedActions(): ChapterZeroAction[] {
+    const actions = this.completedActions; this.completedActions = []; return actions;
+  }
+  close() { this.active = undefined; this.index = 0; this.completedActions = []; }
 }
 
 export class MemorySystem {

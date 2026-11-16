@@ -1,7 +1,7 @@
-import type { DialogueDefinition, MemoryDefinition, QuestDefinition } from '../systems/StoryState';
+import source from './chapter0.json';
+import { parseStoryCatalog, runtimeStory } from '../systems/StoryCatalog';
 
 // Reserved IDs in Tiled: bedroom.bed / desk / laptop / alarm / bookshelf / photo / door.
-// Populate only after the official script is supplied. No invented dialogue or quests.
-export const dialogues: DialogueDefinition[] = [];
-export const quests: QuestDefinition[] = [];
-export const memories: MemoryDefinition[] = [];
+// Validation runs for drafts too; only approved content is exposed to gameplay.
+export const story = runtimeStory(parseStoryCatalog(source));
+export const { dialogues, quests, memories } = story;

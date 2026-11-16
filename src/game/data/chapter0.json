@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "approval": "pending",
+  "chapter0": {
+    "enabled": false,
+    "memoryIds": ["chapter0.memory.1", "chapter0.memory.2", "chapter0.memory.3"]
+  },
+  "dialogues": [],
+  "memories": [],
+  "quests": []
+}

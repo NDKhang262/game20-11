@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import { Player } from '../entities/Player';
 import { Controls } from '../systems/Controls';
 import { DialogueSystem, MemorySystem, QuestSystem } from '../systems/StoryState';
-import { dialogues, memories, quests } from '../data/story';
+import { dialogues, memories, quests, story } from '../data/story';
+import { ChapterZero } from '../systems/ChapterZero';
 
 interface Target { id: string; label: string; dialogueId: string; memoryId?: string; x: number; y: number; width: number; height: number }
 
@@ -17,6 +18,7 @@ export class BedroomScene extends Phaser.Scene {
   private dialogue = new DialogueSystem(dialogues);
   private memory = new MemorySystem(memories);
   private quest = new QuestSystem(quests, this.memory);
+  private chapter0 = new ChapterZero(story.chapter0.memoryIds);
   private panelOpen = false;
   constructor() { super('BedroomScene'); }
 
@@ -58,7 +60,11 @@ export class BedroomScene extends Phaser.Scene {
     const abort = new AbortController();
     document.querySelector('#dialogue-close')!.addEventListener('click', () => this.closePanel(), { signal: abort.signal });
     document.querySelector('#dialogue-next')!.addEventListener('click', () => {
-      if (this.dialogue.next()) this.renderLine(); else this.closePanel();
+      if (this.dialogue.next()) this.renderLine();
+      else {
+        this.applyCompletedDialogue();
+        this.closePanel();
+      }
     }, { signal: abort.signal });
     const reset = () => { this.input.keyboard?.resetKeys(); this.controls.held.clear(); this.player.setVelocity(0); };
     window.addEventListener('blur', reset, { signal: abort.signal });
@@ -101,6 +107,20 @@ export class BedroomScene extends Phaser.Scene {
     if (line) document.querySelector('#dialogue-text')!.textContent = `${line.speaker ? line.speaker + ': ' : ''}${line.text}`;
   }
 
+  private applyCompletedDialogue() {
+    const actions = this.dialogue.takeCompletedActions();
+    if (!story.chapter0.enabled) return;
+    for (const action of actions) {
+      if (!this.chapter0.dispatch(action)) continue;
+      if (action.type === 'memory.collect') this.memory.collect(action.memoryId);
+      if (action.type === 'yearOne.request') {
+        // Handoff only: no YearOne scene exists yet; never claim it has loaded.
+        this.events.emit('chapter0:year-one-requested', this.chapter0.snapshot);
+      }
+    }
+    document.querySelector('#story-status')!.textContent = `Nhiệm vụ: ${quests.length ? this.quest.states.filter(q => q.complete).length + '/' + quests.length : 'chờ kịch bản'} · Ký ức: ${this.memory.ids.length}`;
+  }
+
   private closePanel() {
     document.querySelector<HTMLDialogElement>('#dialogue')!.close();
     this.panelOpen = false; this.dialogue.close();
@@ -131,6 +151,7 @@ export class BedroomScene extends Phaser.Scene {
     return { x: this.player.x, y: this.player.y, body: { x: body.x, y: body.y, width: body.width, height: body.height },
       nearby: this.nearby?.id ?? null, marker: this.marker.visible, panelOpen: this.panelOpen,
       interactions: this.interactions, memories: this.memory.ids, quests: this.quest.states,
+      chapter0: { enabled: story.chapter0.enabled, ...this.chapter0.snapshot },
       map: { width: 20, height: 15, tileSize: 32 } };
   }
 }

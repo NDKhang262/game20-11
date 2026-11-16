@@ -10,6 +10,9 @@
     "preview": "vite preview --host 127.0.0.1",
     "test:browser": "node scripts/smoke.mjs",
     "test:systems": "node --experimental-transform-types scripts/story.test.mjs",
+    "test:chapter0": "node --experimental-transform-types scripts/chapter0.test.mjs",
+    "test:chapter0:browser": "node scripts/chapter0-browser.mjs",
+    "test": "npm run test:systems && npm run test:chapter0",
     "assets:bedroom": "node scripts/generate-bedroom.mjs"
   },
   "engines": { "node": "^20.19.0 || >=22.12.0" },

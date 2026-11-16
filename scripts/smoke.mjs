@@ -51,6 +51,7 @@ try {
     assert.equal(response.status(), 200);
     await page.waitForFunction(() => { try { return window.__reStudent().x > 0; } catch { return false; } });
     assert.deepEqual((await state()).map, { width: 20, height: 15, tileSize: 32 });
+    assert.equal((await state()).chapter0.enabled, false, 'unapproved chapter stays disabled');
     const box = await page.locator('canvas').boundingBox();
     assert(box.width > 300 && Math.abs(box.width / box.height - 4/3) < .02);
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -102,6 +103,7 @@ try {
       assert.equal((await state()).quests.length, 0);
     }
     await page.screenshot({ path: `artifacts/bedroom-${mobile ? 'mobile' : 'desktop'}.png`, fullPage: true });
+    assert.equal((await state()).chapter0.phase, 'alarm-ringing', 'placeholder interactions do not advance chapter');
     results.push({ viewport: mobile ? '390x844 + 844x390 emulated' : '1366x1080', canvas: 'PASS', controls: 'PASS', collision: 'PASS', interaction: 'PASS', dialogueModal: 'PASS', overflow: 'PASS' });
     await context.close();
   }
